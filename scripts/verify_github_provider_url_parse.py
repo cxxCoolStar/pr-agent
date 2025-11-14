@@ -5,9 +5,10 @@ from urllib.parse import urlparse
 def parse_pr_url(pr_url: str):
     parsed_url = urlparse(pr_url)
 
-    # Normalize GitHub Enterprise API v3 URLs
+    # Normalize GitHub Enterprise API v3 URLs by stripping only the path prefix
     if parsed_url.path.startswith('/api/v3'):
-        parsed_url = urlparse(pr_url.replace('/api/v3', ''))
+        new_path = parsed_url.path[len('/api/v3'):] or '/'
+        parsed_url = parsed_url._replace(path=new_path)
 
     path_parts = parsed_url.path.strip('/').split('/')
 
